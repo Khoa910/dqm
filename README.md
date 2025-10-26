@@ -1,0 +1,2 @@
+npm install -D vite@4.5.2 @vitejs/plugin-react@4.2.1 eslint@8.57.0 @eslint/js@8.57.0 eslint-plugin-react-hooks@4.6.0 eslint-plugin-react-refresh@0.4.5 globals@13.23.0
+nếu react 18 không tương thích ngược
