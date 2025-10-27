@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Intro from "../components/Intro";
+import Intro from "../components/effects/Intro";
 import Home from "../pages/Home";
 
 const HomeLogic = () => {
@@ -7,11 +7,8 @@ const HomeLogic = () => {
 
   return (
     <>
-      {showIntro ? (
-        <Intro onFinish={() => setShowIntro(false)} />
-      ) : (
-        <Home />
-      )}
+      {showIntro && <Intro onFinish={() => setShowIntro(false)} />}
+      <Home show={!showIntro} />
     </>
   );
 };
