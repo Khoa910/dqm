@@ -3,78 +3,112 @@ import gsap from "gsap";
 
 const IntroAbout = ({ 
   onFinish, 
+  onTimelineCreate,
   backgroundImage, 
   currentBackground, 
-  duration = 2,
-  transitionType = "slide"
+  finalBackground = null,
+  finalContent,
 }) => {
-  const introRef = useRef(null);
-  const newBackgroundRef = useRef(null);
+  const introBackgroundRef = useRef(null);
   const oldBackgroundRef = useRef(null);
+  const finalContentRef = useRef(null);
 
   useEffect(() => {
-    const tl = gsap.timeline({
-      onComplete: () => {
-        // HIỆU ỨNG KẾT THÚC: slide toàn bộ intro lên trên và fade out
-        gsap.to(introRef.current, {
-          y: "-100%", // Di chuyển lên trên ra khỏi màn hình
-          opacity: 0,
-          duration: 1,
-          ease: "power2.inOut",
-          onComplete: onFinish,
-        });
-      },
+    const tl = gsap.timeline();
+
+    // Truyền timeline về component cha
+    if (onTimelineCreate) {
+      onTimelineCreate(tl);
+    }
+
+    // BƯỚC 1: Slide background cũ lên
+    tl.to(oldBackgroundRef.current, {
+      y: '-100%',
+      duration: 0.8,
+      ease: "power2.inOut"
     });
 
-    // BƯỚC 1: BG cũ slide lên để LỘ RA BG intro (đã nằm sẵn bên dưới)
-    tl
-    // BG cũ slide LÊN - lộ ra BG intro bên dưới
-    .to(oldBackgroundRef.current, {
-      y: '-100%',
-      duration: duration * 0.4, // 0.8s cho bước 1
-      ease: "power2.inOut"
-    })
-    
-    // BƯỚC 2: Dừng 2s ở BG intro
-    .to({}, { duration: 2 });
+    // BƯỚC 2: Dừng 2s xem intro, rồi slide intro lên
+    tl.to({}, { duration: 2 })
+      .to(introBackgroundRef.current, {
+        y: '-100%',
+        duration: 0.8,
+        ease: "power2.inOut"
+      });
 
-    return () => {
-      tl.kill();
-    };
-  }, [onFinish, duration, transitionType]);
+    // BƯỚC 3: Fade in nội dung cuối (nếu có)
+    if (finalContent) {
+      tl.to(finalContentRef.current, { 
+        opacity: 1, 
+        y: 0,
+        duration: 0.5
+      });
+    }
+
+    // Gọi onFinish khi tất cả animation hoàn thành
+    tl.call(onFinish, null, "+=0.1"); // Thêm delay nhỏ để đảm bảo animation hoàn thành
+
+  }, [onFinish, finalContent, onTimelineCreate]);
 
   return (
-    <div
-      ref={introRef}
-      className="fixed inset-0 z-40" // z-40 để nằm dưới navbar (z-50)
-    >
-      {/* Background intro - ĐÃ NẰM SẴN Ở DƯỚI */}
-      <div 
-        ref={newBackgroundRef}
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `url(${backgroundImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      >
-        {/* Overlay để nội dung nổi bật */}
-        <div className="absolute inset-0 bg-black/10"></div>
-      </div>
+    <div className="fixed inset-0 z-40">
+      {/* Layer 3: Final background & content */}
+      {finalBackground ? (
+        <div className="absolute inset-0"> 
+          <div 
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `url(${finalBackground})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+          />
+          {finalContent && (
+            <div ref={finalContentRef} className="relative z-20 opacity-0">
+              {finalContent}
+            </div>
+          )}
+        </div>
+      ) : finalContent ? (
+        // Nếu không có finalBackground nhưng có finalContent, vẫn render content
+        <div className="absolute inset-0 bg-gray-100"> {/* Fallback background */}
+          {finalContent && (
+            <div ref={finalContentRef} className="relative z-20 opacity-0">
+              {finalContent}
+            </div>
+          )}
+        </div>
+      ) : null}
 
-      {/* Background hiện tại - sẽ slide LÊN để lộ BG intro bên dưới */}
-      {currentBackground && (
+      {/* Layer 2: Intro background */}
+      <div className="absolute inset-0">
         <div 
-          ref={oldBackgroundRef}
+          ref={introBackgroundRef} 
           className="absolute inset-0"
           style={{
-            backgroundImage: `url(${currentBackground})`,
+            backgroundImage: `url(${backgroundImage})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat'
           }}
         />
+      </div>
+
+      {/* Layer 1: Current background */}
+      {currentBackground && (
+        <div className="absolute inset-0">
+          <div 
+            ref={oldBackgroundRef} 
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `url(${currentBackground})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+          />
+        </div>
       )}
     </div>
   );

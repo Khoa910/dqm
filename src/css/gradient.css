@@ -3,9 +3,9 @@
   top: -5px;
   left: 3rem;
   right: 3rem;
-  z-index: 50;
+  z-index: 90;
   padding: 3px;
-  background: linear-gradient(90deg, #8B6914, #BC8E40, #D4AF37, #BC8E40, #8B6914);
+  background: linear-gradient(90deg, #BC8E40, #FFFCD5);
   border-radius: 0 0 1.5rem 1.5rem;
   clip-path: polygon(
     0% 4px,     /* Top-left - bắt đầu sau border top */
@@ -13,4 +13,12 @@
     100% 100%,  /* Bottom-right */
     0% 100%     /* Bottom-left */
   );
+}
+
+.gradient-button {
+  border: 3px solid transparent;
+  background: 
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(90deg, #BC8E40, #FFFCD5) border-box;
+  border-radius: 0.5rem;
 }
