@@ -5,12 +5,15 @@ const IntroAbout = ({
   onFinish, 
   onTimelineCreate,
   backgroundImage, 
-  currentBackground, 
+  currentBackground = null,
+  currentContent = null, // Nhận current content
   finalBackground = null,
   finalContent,
 }) => {
   const introBackgroundRef = useRef(null);
   const oldBackgroundRef = useRef(null);
+  const oldContentRef = useRef(null); // Ref cho current content
+  const finalBackgroundRef = useRef(null);
   const finalContentRef = useRef(null);
 
   useEffect(() => {
@@ -21,68 +24,68 @@ const IntroAbout = ({
       onTimelineCreate(tl);
     }
 
-    // BƯỚC 1: Slide background cũ lên
-    tl.to(oldBackgroundRef.current, {
+    // BƯỚC 1: Slide current background và content lên
+    tl.to([oldBackgroundRef.current, oldContentRef.current], {
+      y: '-100%',
+      duration: 0.8,
+      ease: "power2.inOut",
+      stagger: 0.1
+    })
+
+    // BƯỚC 2: HIỂN THỊ FINAL BACKGROUND & CONTENT
+    .to([finalBackgroundRef.current, finalContentRef.current], {
+      opacity: 1,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: "power2.out"
+    }, "revealFinal")
+
+    // BƯỚC 3: Dừng 1.5s xem intro
+    .to({}, { duration: 1.5 })
+    
+    // BƯỚC 4: Slide intro lên
+    .to(introBackgroundRef.current, {
       y: '-100%',
       duration: 0.8,
       ease: "power2.inOut"
     });
 
-    // BƯỚC 2: Dừng 2s xem intro, rồi slide intro lên
-    tl.to({}, { duration: 2 })
-      .to(introBackgroundRef.current, {
-        y: '-100%',
-        duration: 0.8,
-        ease: "power2.inOut"
-      });
-
-    // BƯỚC 3: Fade in nội dung cuối (nếu có)
-    if (finalContent) {
-      tl.to(finalContentRef.current, { 
-        opacity: 1, 
-        y: 0,
-        duration: 0.5
-      });
-    }
-
     // Gọi onFinish khi tất cả animation hoàn thành
-    tl.call(onFinish, null, "+=0.1"); // Thêm delay nhỏ để đảm bảo animation hoàn thành
+    tl.call(() => {
+      onFinish();
+    });
 
-  }, [onFinish, finalContent, onTimelineCreate]);
+  }, [onFinish, onTimelineCreate]);
 
   return (
     <div className="fixed inset-0 z-40">
-      {/* Layer 3: Final background & content */}
-      {finalBackground ? (
-        <div className="absolute inset-0"> 
+      {/* Layer 1: Current background & content - CAO NHẤT ĐỂ SLIDE */}
+      {currentBackground && (
+        <div className="absolute inset-0 z-40">
           <div 
+            ref={oldBackgroundRef} 
             className="absolute inset-0"
             style={{
-              backgroundImage: `url(${finalBackground})`,
+              backgroundImage: `url(${currentBackground})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat'
             }}
           />
-          {finalContent && (
-            <div ref={finalContentRef} className="relative z-20 opacity-0">
-              {finalContent}
+          {/* Current content */}
+          {currentContent && (
+            <div 
+              ref={oldContentRef}
+              className="absolute inset-0 z-10"
+            >
+              {currentContent}
             </div>
           )}
         </div>
-      ) : finalContent ? (
-        // Nếu không có finalBackground nhưng có finalContent, vẫn render content
-        <div className="absolute inset-0 bg-gray-100"> {/* Fallback background */}
-          {finalContent && (
-            <div ref={finalContentRef} className="relative z-20 opacity-0">
-              {finalContent}
-            </div>
-          )}
-        </div>
-      ) : null}
+      )}
 
-      {/* Layer 2: Intro background */}
-      <div className="absolute inset-0">
+      {/* Layer 2: Intro background - THẤP HƠN */}
+      <div className="absolute inset-0 z-30">
         <div 
           ref={introBackgroundRef} 
           className="absolute inset-0"
@@ -95,19 +98,31 @@ const IntroAbout = ({
         />
       </div>
 
-      {/* Layer 1: Current background */}
-      {currentBackground && (
-        <div className="absolute inset-0">
+      {/* Layer 3: Final background & content - THẤP NHẤT, HIỆN SỚM */}
+      {finalBackground && (
+        <div 
+          ref={finalBackgroundRef}
+          className="absolute inset-0 z-20 opacity-0"
+        > 
           <div 
-            ref={oldBackgroundRef} 
             className="absolute inset-0"
             style={{
-              backgroundImage: `url(${currentBackground})`,
+              backgroundImage: `url(${finalBackground})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat'
             }}
           />
+          
+          {/* FINAL CONTENT */}
+          {finalContent && (
+            <div 
+              ref={finalContentRef}
+              className="relative z-10 opacity-0"
+            >
+              {finalContent}
+            </div>
+          )}
         </div>
       )}
     </div>

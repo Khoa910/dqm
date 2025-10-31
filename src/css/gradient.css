@@ -22,3 +22,17 @@
     linear-gradient(90deg, #BC8E40, #FFFCD5) border-box;
   border-radius: 0.5rem;
 }
+
+.gradient-news {
+  border: 2px solid transparent;
+  background: 
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(90deg, #FFEAC4, #AB8040) border-box;
+}
+
+.gradient-hr {
+  border: 2px solid transparent;
+  background: 
+    linear-gradient(#FFFCD5, #FFFCD5) padding-box,
+    linear-gradient(90deg, #BC8E40, #FFFCD5) border-box;
+}

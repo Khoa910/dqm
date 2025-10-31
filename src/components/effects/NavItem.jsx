@@ -1,9 +1,9 @@
 import { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { Link } from "react-router-dom";
-import DropdownMenu from "../DropdownMenu"
+import DropdownMenu from "../DropdownMenu";
 
-const NavItem = ({ label, subItems = [] }) => {
+const NavItem = ({ label, to, subItems = [] }) => {
   const containerRef = useRef(null);
   const textWrapperRef = useRef(null);
   const textTop = useRef(null);
@@ -41,7 +41,7 @@ const NavItem = ({ label, subItems = [] }) => {
     timeoutRef.current = setTimeout(() => {
       setIsHovered(false);
       tl.current.reverse();
-    }, 150); // Delay 150ms trước khi đóng
+    }, 150);
   };
 
   const handleDropdownEnter = () => {
@@ -58,7 +58,8 @@ const NavItem = ({ label, subItems = [] }) => {
 
   return (
     <>
-      <div
+      <Link
+        to={to || "#"}
         ref={containerRef}
         onMouseEnter={handleEnter}
         onMouseLeave={handleLeave}
@@ -78,10 +79,10 @@ const NavItem = ({ label, subItems = [] }) => {
             {label}
           </span>
         </div>
-      </div>
+      </Link>
 
       <DropdownMenu
-        isVisible={isHovered && subItems.length > 0} 
+        isVisible={isHovered && subItems.length > 0}
         targetRef={containerRef}
         onMouseEnter={handleDropdownEnter}
         onMouseLeave={handleDropdownLeave}

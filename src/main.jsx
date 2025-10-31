@@ -4,6 +4,7 @@ import './index.css'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MainLayout from './layouts/MainLayout.jsx';
 import HomeLogic from './logic/HomeLogic.jsx';
+import ContactPage from './pages/contact/ContactPage.jsx'
 // import AboutPage from './pages/aboutUs/AboutPage.jsx';
 // import VisionPage from './pages/aboutUs/VisionPage.jsx';
 // import LeadershipPage from './pages/aboutUs/LeadershipPage.jsx';
@@ -17,10 +18,10 @@ const router = createBrowserRouter([
         path: "/",
         element: <HomeLogic />,
       },
-      // {
-      //   path: "about",
-      //   element: <AboutPage />,
-      // },
+      {
+        path: "contact",
+        element: <ContactPage />,
+      },
       // {
       //   path: "vision",
       //   element: <VisionPage />,

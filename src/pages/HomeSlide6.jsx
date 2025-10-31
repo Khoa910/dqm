@@ -1,21 +1,23 @@
-import introBg from "../assets/introduce-bg.jpg"
+import Contact from "../components/Contact"
 
-const HomeSlide2 = () => {
-    return(
-        <div className="fixed inset-0 flex items-center justify-center z-[9999]"
-              style={{
-                backgroundImage: `url(${introBg})`, // Sử dụng ảnh nền
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat'
-              }}>
-            <h1>VỀ ĐẠI QUANG MINH</h1>
-            <span>ĐẠI QUANG MINH là Tập đoàn thành viên của THACO hoạt động trong lĩnh vực đầu tư xây dựng, thực
-                hiện chiến lược đầu tư, xây dựng và kinh doanh, quản lý vận hành các dự án hạ tầng giao thông, khu công
-                nghiệp, khu đô thị và các dự án bất động sản, có tính tích hợp, bổ trợ, tạo ra sự khác biệt và ưu thế cạnh
-                tranh cho THACO và các Tập đoàn thành viên.</span>
-        </div>
-    )
-}
+const HomeSlide6 = () => {
+  return (
+    <div className="flex flex-col min-h-screen pt-36">
+      {/* Phần 1/3 trên: màu trắng */}
+      <div className="flex items-center justify-center bg-white h-1/3"
+        style={{
+            background: "linear-gradient(to bottom, white 0%, white 70%, #FFFCD5 100%)",
+          }}
+      >
+        <h1 className="text-3xl md:text-4xl font-bold text-[#BC8E40] mb-6 text-center">
+          LIÊN HỆ - TUYỂN DỤNG
+        </h1>
+      </div>
 
-export default HomeSlide2;
+      {/* Phần 2/3 dưới: gradient - GỌI COMPONENT MỚI */}
+      <Contact />
+    </div>
+  );
+};
+
+export default HomeSlide6;

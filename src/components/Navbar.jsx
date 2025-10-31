@@ -52,7 +52,7 @@ const Navbar = () => {
           ]}
         />
         <NavItem label="TUYỂN DỤNG"/>
-        <NavItem label="LIÊN HỆ" />
+        <NavItem label="LIÊN HỆ" to="/contact"/>
         <Link to="/" className="transition-colors hover:text-blue-600">VI/EN</Link>
         <Link to="/" className="transition-colors hover:text-blue-600">TK</Link>
       </div>
